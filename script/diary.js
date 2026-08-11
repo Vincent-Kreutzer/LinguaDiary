@@ -20,11 +20,14 @@ async function getTranslation(target) {
 		})
 
 		const data = await response.json();
+
 		console.log(response.status);
-console.log(data);
-console.log(JSON.stringify(data));
+		console.log(data);
+		console.log(JSON.stringify(data));
 		diaryOutput.textContent = data;
+
 	} catch (e) {
 		console.error(e);
 	}
 }
+
