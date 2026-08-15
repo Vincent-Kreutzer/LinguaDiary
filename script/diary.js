@@ -1,12 +1,14 @@
 
 const diaryInput = document.querySelector(".diary-input");
 const diaryOutput = document.querySelector(".diary-output");
-const translate = document.querySelector(".translate");
+const translateBtn = document.querySelector(".translate-btn");
 
-translate.addEventListener("click", () => {
+
+//翻訳ボタンイベント付与
+translateBtn.addEventListener("click", () => {
 	const target = diaryInput.value;
 	console.log(target);
-	getTranslation(target)
+	getTranslation(target);
 })
 
 async function getTranslation(target) {
@@ -25,7 +27,6 @@ async function getTranslation(target) {
 		console.log(data);
 		console.log(JSON.stringify(data));
 		diaryOutput.textContent = data;
-
 	} catch (e) {
 		console.error(e);
 	}
