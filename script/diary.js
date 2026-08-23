@@ -1,15 +1,41 @@
 
-const diaryInput = document.querySelector(".diary-input");
-const diaryOutput = document.querySelector(".diary-output");
-const translateBtn = document.querySelector(".translate-btn");
-const saveBtn = document.querySelector(".save-btn");
+/*============================
+=====DOM取得と主要変数定義=====
+=============================*/
+
+const diaryTitle = document.querySelector(".diary-title");
 const diaryDate = document.querySelector(".diary-date");//日付
 const diaryTime = document.querySelector(".diary-time");//時刻
-
-const diaryList = document.querySelector(".diary-list");
+const diaryInput = document.querySelector(".diary-input");
+const diaryOutput = document.querySelector(".diary-output");
+const diaryList = document.querySelector(".diary-list");//リスト表示欄
 
 const topBtn = document.querySelector(".top-btn");
+const newBtn = document.querySelector(".new-btn");
 const listBtn = document.querySelector(".list-btn");
+
+const translateBtn = document.querySelector(".translate-btn");
+const speechBtn = document.querySelector(".speech-btn");
+const saveBtn = document.querySelector(".save-btn");
+const deleteBtn = document.querySelector(".delete-btn");
+let currentDiaryId = null; //日記を編集や削除する際に参照する
+
+
+/*====================
+=====新規日記作成=====
+======================*/
+
+newBtn.addEventListener("click", resetDiaryForm);
+
+//新しく日記を書くために、もろもろを初期状態に戻す
+function resetDiaryForm() {
+	getCurrentDate();
+	diaryTitle.value = "";	
+	diaryInput.value = "";
+	diaryOutput.value = "";
+	currentDiaryId = null;
+	updateDiaryMode();
+}
 
 
 //表示時間関数（日記を書き始めた日時を記録、表示）
@@ -36,13 +62,18 @@ function getCurrentDate() {
 
 //翻訳ボタンイベント付与
 translateBtn.addEventListener("click", () => {
-	const target = diaryInput.value;//翻訳対象を変数に入れ、
+	const target = diaryInput.value;//翻訳対象を変数に入れる
 	console.log(target);
 	getTranslation(target);//翻訳関数実行
 })
 
+
 //翻訳関数
 async function getTranslation(target) {
+	if (!diaryInput.value.trim()) {
+		alert("Please write your diary entry first.")
+		return;
+	}
 	try	{
 		const response = await fetch ("api/translate.php", {
 			method: "POST",
@@ -53,7 +84,7 @@ async function getTranslation(target) {
 		})
 
 		const data = await response.json();	
-		diaryOutput.textContent = data;
+		diaryOutput.value = data;
 	} catch (e) {
 		console.error(e);
 	}
@@ -61,13 +92,25 @@ async function getTranslation(target) {
 
 
 //保存ボタンイベント付与
-saveBtn.addEventListener("click", () => {
+saveBtn.addEventListener("click", async () => {
+	if (!diaryInput.value.trim()) {		
+		alert("Please write your diary entry first.")
+		return;
+	} 
+	
+	const target = diaryInput.value;//翻訳対象を変数に入れる
+
+ 	if (!diaryOutput.value.trim())	{		
+		await getTranslation(target);
+	}
+		
 	console.log("clicked save button");
-	saveDiary();
+	await saveDiary();
+	resetDiaryForm();
 })
 
 
-//DBへの日記保存処理
+//DBへの日記保存（更新）処理
 async function saveDiary() {
 
 	//保存する情報を取得
@@ -75,11 +118,12 @@ async function saveDiary() {
 	const diaryDate = document.querySelector(".diary-date").value;
 	const diaryTime = document.querySelector(".diary-time").value;
 	const originalText = document.querySelector(".diary-input").value;
-	const translatedText = document.querySelector(".diary-output").textContent;
+	const translatedText = document.querySelector(".diary-output").value;
 	const userId = 1;
 
 	//保存データをオブジェクトに入れて一纏めにする
 	const diaryData = {
+		currentDiaryId : currentDiaryId,
 		title:title,
 		diary_date:diaryDate,
 		diary_time:diaryTime,
@@ -102,9 +146,21 @@ async function saveDiary() {
 	console.log(response.status);
 	const data = await response.json();
 	console.log(data);
-	if (data.sucess) {
-		alert("Saved!");
+	
+	
+	if (data.success) {
+		if (data.action === "created") {
+			alert("The diary entry was successfully saved.");
+			resetDiaryForm();
+			initDiaries();
+		} else {
+			alert("The diary entry was successfully updated.");
+			resetDiaryForm();
+			initDiaries();
+
+		}
 	}
+
 	} catch (e) {
 		console.log(e.error);
 	}
@@ -112,7 +168,9 @@ async function saveDiary() {
 }//saveDiary()
 
 
-
+/*===================
+=====日記一覧表示=====
+====================*/
 
 //日記データ取得と表示を統括する関数
 async function initDiaries() {
@@ -136,41 +194,115 @@ async function getDiaries() {
 	
 }//getDiaries()
 
-
-//日記データ表示
-listBtn.addEventListener("click", () => {
-	diaryList.classList.toggle("hidden");
-})
-
 //日記データrender関数
 function renderDiaries(diaryArray) {
+	diaryList.innerHTML = "";
 	const diaries = diaryArray;
 	
-
 	diaries.forEach(diary => {		
 		//日記見出し表示欄に各日記の日付と題名を表示する
 
 		const diaryItem = document.createElement("div");
 		diaryItem.classList.add("diary-item");
+		diaryItem.dataset.diaryId = diary.id;
+
+		diaryItem.addEventListener("click", () => {
+			currentDiaryId = diary.id;
+			updateDiaryMode();
+
+			console.log(currentDiaryId)
+			diaryDate.value = diary.diary_date;
+			diaryTime.value = diary.diary_time;
+			diaryTitle.value = diary.title;
+			diaryInput.value = diary.original_text;
+			diaryOutput.value = diary.translated_text;
+
+			diaryList.classList.toggle("hidden");
+			
+
+		})
+
 		diaryList.appendChild(diaryItem);
 
-		const diaryDate = document.createElement("span");
-		diaryDate.classList.add("diary-date");
-		diaryDate.textContent = diary.diary_date;
-		diaryItem.appendChild(diaryDate);
+		const listDate = document.createElement("span");
+		listDate.classList.add("list-date");
+		listDate.textContent = diary.diary_date;
+		diaryItem.appendChild(listDate);
 
-		const diaryTitle = document.createElement("p");
-		diaryTitle.classList.add("diary-title");
-		diaryTitle.textContent = diary.title;
-		diaryItem.appendChild(diaryTitle);
+		const listTitle = document.createElement("p");
+		listTitle.classList.add("list-title");
+		listTitle.textContent = diary.title;
+		diaryItem.appendChild(listTitle);
 		
 
 	})
+}//renderDiaries();
+
+
+/*======================
+=====既存日記の削除=====
+=======================*/
+
+deleteBtn.addEventListener("click", async () => {
+	const confirmed = confirm("Are you sure you want to delete the diary entry?");
+	if (!confirmed) return;
+	try {
+		const response = await fetch("api/delete.php", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				currentDiaryId: currentDiaryId
+			})
+		})
+
+		const data = await response.json();
+
+		if (data.success) {
+			alert("The diary was successfully deleted.");
+			resetDiaryForm();
+			initDiaries();
+			
+		} else {
+			alert("The deletion process failed.")
+			
+		}
+	} catch ($e) {
+		console.log($e.error);
+	}
+});
+
+
+//listBtnのイベント付与：一覧の表示非表示切り替え
+listBtn.addEventListener("click", () => {	
+	toggleDiaryList();
+	})
+
+//一覧の表示非表示切り替え
+function toggleDiaryList() {
+	diaryList.classList.toggle("hidden");
 }
+
+//状態によるボタンの表示非表示
+function updateDiaryMode() {
+	if (currentDiaryId === null) {
+		deleteBtn.classList.add("hidden");
+		saveBtn.textContent = "SAVE";
+	} else {
+		deleteBtn.classList.remove("hidden");
+		saveBtn.textContent = "UPDATE";
+	}
+}
+
+
+
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
 	getCurrentDate();
 	initDiaries();
+	updateDiaryMode();
 })
 

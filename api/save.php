@@ -8,6 +8,7 @@ $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
 
 //③データの取り出し
+$currentDiaryId = $data["currentDiaryId"];
 $title = $data["title"];
 $diaryDate = $data["diary_date"];
 $diaryTime = $data["diary_time"];
@@ -30,15 +31,28 @@ try {
 
 
 //⑤INSERT分をprepare
-$stmt = $pdo->prepare (
+if ($currentDiaryId === null) {
+  $stmt = $pdo->prepare (
   "INSERT INTO diaries
   (user_id, title, diary_date, diary_time, original_text, translated_text)
   VALUES
   (:user_id, :title, :diary_date, :diary_time, :original_text, :translated_text)"
   );
 
+} else {
+  $stmt = $pdo->prepare (
+    "UPDATE diaries SET 
+    title = :title,
+    original_text = :original_text,
+    translated_text = :translated_text
+    where id = :id"
+  );
+}
+
+
 //⑥executeで値を入れて実行
-$stmt->execute([
+if ($currentDiaryId === null) {
+  $stmt->execute([
   ":user_id" => $userId,
   ":title" => $title,
   ":diary_date" => $diaryDate,
@@ -46,12 +60,37 @@ $stmt->execute([
   ":original_text" => $originalText,
   ":translated_text" => $translatedText
 ]);
+} else {
+  $stmt->execute([
+    ":title" => $title,
+    ":original_text" => $originalText,
+    ":translated_text" => $translatedText,
+    ":id" => $currentDiaryId
+  ]);
+}
 
-//⑦JSに送信結果を通知
-$response = [
-  "success" => true,
-  "id" => $pdo->lastInsertId()
-];
+
+//⑦JSに処理結果を通知
+
+if ($currentDiaryId === null) {
+  $response = [
+    "success" => true,
+    "action" => "created",
+    "id" => $pdo->lastInsertId()
+  ];
+} else {
+  $response = [
+    "success" => true,
+    "action" => "updated",
+    "id" => $currentDiaryId
+  ];
+}
+
+
 
 echo(json_encode($response));
+
+
+
+
 ?>
