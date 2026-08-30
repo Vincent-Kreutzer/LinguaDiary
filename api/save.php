@@ -1,7 +1,8 @@
 <?php
 
-//jsからデータを受け取る処理
+session_start();//セッション開始
 
+//jsからデータを受け取る処理
 //①そのままのデータ（jsから送られたJSON文字列のデータ）の受け取り
 $rawData = file_get_contents("php://input");
 //②PHP変数（連想配列に送られたデータがある）に変換
@@ -14,14 +15,16 @@ $diaryDate = $data["diary_date"];
 $diaryTime = $data["diary_time"];
 $originalText = $data["original_text"];
 $translatedText = $data["translated_text"];
-$userId = $data["user_id"];
+
+//セッションからユーザーIDを取得
+$userId = $_SESSION["user_id"];
 
 //④PDOでデータベース接続
-$dsn = "mysql:host=localhost; dbname=linguadiary; charset=utf8mb4";
+$dbn = "mysql:host=localhost; dbname=linguadiary; charset=utf8mb4";
 
 try {
   $pdo = new PDO(
-    $dsn,"root","",
+    $dbn,"root","",
     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
   );
 } catch (PDOException $e) {
@@ -31,6 +34,8 @@ try {
 
 
 //⑤INSERT分をprepare
+
+//新規登録の場合
 if ($currentDiaryId === null) {
   $stmt = $pdo->prepare (
   "INSERT INTO diaries
@@ -39,16 +44,16 @@ if ($currentDiaryId === null) {
   (:user_id, :title, :diary_date, :diary_time, :original_text, :translated_text)"
   );
 
+//更新の場合
 } else {
   $stmt = $pdo->prepare (
     "UPDATE diaries SET 
     title = :title,
     original_text = :original_text,
     translated_text = :translated_text
-    where id = :id"
+    where id = :id AND user_id = :user_id"
   );
 }
-
 
 //⑥executeで値を入れて実行
 if ($currentDiaryId === null) {
@@ -65,7 +70,8 @@ if ($currentDiaryId === null) {
     ":title" => $title,
     ":original_text" => $originalText,
     ":translated_text" => $translatedText,
-    ":id" => $currentDiaryId
+    ":id" => $currentDiaryId,
+    "user_id" => $userId
   ]);
 }
 

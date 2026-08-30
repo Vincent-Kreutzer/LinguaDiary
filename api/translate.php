@@ -1,6 +1,6 @@
 
 <?php
-//★★★チャットGPTにファイル丸ごと送るの厳禁！！★★★
+
 
 require_once "../config/config.php";//外部ファイル読込
 //JSからデータを受け取る処理

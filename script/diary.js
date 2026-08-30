@@ -13,6 +13,7 @@ const diaryList = document.querySelector(".diary-list");//リスト表示欄
 const topBtn = document.querySelector(".top-btn");
 const newBtn = document.querySelector(".new-btn");
 const listBtn = document.querySelector(".list-btn");
+const logoutBtn = document.querySelector(".logout-btn");
 
 const translateBtn = document.querySelector(".translate-btn");
 const speechBtn = document.querySelector(".speech-btn");
@@ -21,13 +22,61 @@ const deleteBtn = document.querySelector(".delete-btn");
 let currentDiaryId = null; //日記を編集や削除する際に参照する
 
 
+/*=====================
+=====ページ保護機能=====
+======================*/
+
+//ログイン状態を確認
+async function checkLogin() {
+	try {
+		const response = await fetch ("api/isLogin.php", {
+			method: "GET"
+		})
+		const data = await response.json();
+		if (data.success === true) {
+			console.log("You are currently logged in.");
+		} else {
+			console.log("You are not logged in. Redirecting to the top page.");
+			location.href = "index.html";
+		}
+ 	}	catch (e) {
+	console.log(e)
+	}
+}
+
+//ログアウト機能
+async function logoutDiary() {
+	try {
+		const response = await fetch("logout.php", {
+			method: "GET"
+		});
+
+		const data = await response.json();
+		if (data.success === true) {
+			alert("You have successfully logged out.");
+			location.href = "index.html";
+		}
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+logoutBtn.addEventListener("click", () => {
+	logoutDiary();
+})
+
 /*====================
 =====新規日記作成=====
 ======================*/
 
+topBtn.addEventListener("click", () => {
+	location.href = "index.html";
+
+})
 newBtn.addEventListener("click", resetDiaryForm);
 
-//新しく日記を書くために、もろもろを初期状態に戻す
+
+//表示項目を初期状態に戻す
 function resetDiaryForm() {
 	getCurrentDate();
 	diaryTitle.value = "";	
@@ -91,6 +140,18 @@ async function getTranslation(target) {
 }
 
 
+function speakTranslation() {
+	const text = diaryOutput.value;
+	const utterance = new SpeechSynthesisUtterance(text);
+	utterance.lang = "en-US";
+	speechSynthesis.speak(utterance);
+}
+
+//音読ボタンイベント
+speechBtn.addEventListener("click", () => {
+	speakTranslation();
+})
+
 //保存ボタンイベント付与
 saveBtn.addEventListener("click", async () => {
 	if (!diaryInput.value.trim()) {		
@@ -119,7 +180,7 @@ async function saveDiary() {
 	const diaryTime = document.querySelector(".diary-time").value;
 	const originalText = document.querySelector(".diary-input").value;
 	const translatedText = document.querySelector(".diary-output").value;
-	const userId = 1;
+	
 
 	//保存データをオブジェクトに入れて一纏めにする
 	const diaryData = {
@@ -129,7 +190,7 @@ async function saveDiary() {
 		diary_time:diaryTime,
 		original_text:originalText,
 		translated_text:translatedText,
-		user_id:userId
+		
 	};
 
 	//送信処理
@@ -297,12 +358,12 @@ function updateDiaryMode() {
 
 
 
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
+	checkLogin()
 	getCurrentDate();
 	initDiaries();
 	updateDiaryMode();
+	
+
 })
 

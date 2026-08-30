@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="A language learning app that lets you translate a diary written in your native language into a foreign language, helping you learn the meanings and pronunciations of words and sentences.">
+	<title>LinguaDiary</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<main>
+		
+		<div class="diary-list hidden">
+			<!--ここに既存日記の日付と題名を表示する-->
+		</div>
+
+		<div class="book-area">
+
+			<div class="left-page page">
+				<div class="diary-meta">
+					<input type="text" placeholder="今日の日記テーマ" class="diary-title">
+					<div class="diary-datetime">
+						<input type="date" class="diary-date">
+						<input type="time" class="diary-time">
+					</div>
+				</div>
+				<textarea class="diary-input diary"></textarea>
+			</div>
+
+			<div class="right-page page">
+				
+				<div class="navigation-area">
+					<div>
+						<button class="top-btn action-btn">TOP</button>
+						<button class="new-btn action-btn">NEW</button>
+						<button class="list-btn action-btn">LIST</button>
+					</div>
+					<button class="logout-btn action-btn">LOG OUT</button>
+				</div>
+
+				<textarea class="diary-output diary"></textarea>
+
+				<div class="action-area">
+					<button class="translate-btn action-btn">TRANSLATE</button>
+					<button class="speech-btn action-btn">SPEECH</button>
+					<button class="save-btn action-btn">SAVE</button>
+					<button class="delete-btn action-btn hidden">DELETE</button>
+				</div>
+			</div>
+		</div>
+		
+		
+	</main>
+	<script src="script/diary.js"></script>
+</body>

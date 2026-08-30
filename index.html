@@ -4,48 +4,43 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="A language learning app that lets you translate a diary written in your native language into a foreign language, helping you learn the meanings and pronunciations of words and sentences.">
 	<title>LinguaDiary</title>
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/index.css">
 </head>
 <body>
 	<main>
-		
-		<div class="diary-list hidden">
-			<!--ここに既存日記の日付と題名を表示する-->
-		</div>
+		<h1>LinguaDiary</h1>
+    <div class="action-btn">
+      <button class="signup-btn action-btn">Sign Up</button>
+      <button class="signin-btn action-btn">Sign In</button>
+     
+    </div>
+    
+    
+    <div class="signup-modal modal hidden">
+      <label>User Name</label>
+      <input type="text" class="auth-input signup-username">
 
-		<div class="book-area">
+      <label>Email</label>
+      <input type="email" class="auth-input signup-email">
 
-			<div class="left-page page">
-				<div class="diary-meta">
-					<input type="text" placeholder="今日の日記テーマ" class="diary-title">
-					<div class="diary-datetime">
-						<input type="date" class="diary-date">
-						<input type="time" class="diary-time">
-					</div>
-				</div>
-				<textarea class="diary-input diary"></textarea>
-			</div>
+      <label>Password</label>
+      <input type="password" class="auth-input signup-password">
 
-			<div class="right-page page">
-				
-				<div class="navigation-area">
-					<button class="top-btn">TOP</button>
-					<button class="new-btn">NEW</button>
-					<button class="list-btn">LIST</button>
-				</div>
+      <button class="register-btn action-btn">Create Account</button>
+      <button class="cancel-btn action-btn">Cancel</button>
+    </div>
 
-				<textarea class="diary-output diary"></textarea>
+    <div class="signin-modal modal hidden">
+      <label>Email</label>
+      <input type="email" class="auth-input signin-email">
 
-				<div class="action-area">
-					<button class="translate-btn action-btn">TRANSLATE</button>
-					<button class="speech-btn action-btn">SPEECH</button>
-					<button class="save-btn action-btn">SAVE</button>
-					<button class="delete-btn action-btn hidden">DELETE</button>
-				</div>
-			</div>
-		</div>
-		
-		
+      <label>Password</label>
+      <input type="password" class="auth-input signin-password">     
+      
+      <button class="login-btn action-btn">Log in</button>
+      <button class="cancel-btn action-btn">Cancel</button>
+    </div>
+
 	</main>
-	<script src="script/diary.js"></script>
+	<script src="script/index.js"></script>
 </body>
