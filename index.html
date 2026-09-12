@@ -4,41 +4,52 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="A language learning app that lets you translate a diary written in your native language into a foreign language, helping you learn the meanings and pronunciations of words and sentences.">
 	<title>LinguaDiary</title>
+  <link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/index.css">
 </head>
 <body>
 	<main>
-		<h1>LinguaDiary</h1>
-    <div class="action-btn">
-      <button class="signup-btn action-btn">Sign Up</button>
-      <button class="signin-btn action-btn">Sign In</button>
-     
-    </div>
-    
-    
-    <div class="signup-modal modal hidden">
-      <label>User Name</label>
-      <input type="text" class="auth-input signup-username">
+    <div class="content-panel">
+      <h1><span class="brand-accent">Lingua</span>Diary</h1>
+      <p>A more open you, in more languages.</p>
 
-      <label>Email</label>
-      <input type="email" class="auth-input signup-email">
-
-      <label>Password</label>
-      <input type="password" class="auth-input signup-password">
-
-      <button class="register-btn action-btn">Create Account</button>
-      <button class="cancel-btn action-btn">Cancel</button>
-    </div>
-
-    <div class="signin-modal modal hidden">
-      <label>Email</label>
-      <input type="email" class="auth-input signin-email">
-
-      <label>Password</label>
-      <input type="password" class="auth-input signin-password">     
+      <div class="auth-actions">
+        <button class="signin-btn action-btn active">Sign In</button>
+        <button class="signup-btn action-btn">Sign Up</button>
       
-      <button class="login-btn action-btn">Log in</button>
-      <button class="cancel-btn action-btn">Cancel</button>
+      
+      </div>
+
+      <div class="signin-modal modal">
+        <label>Email</label>
+        <input type="email" required class="auth-input signin-email">
+
+        <label>Password</label>
+        <input type="password" required class="auth-input signin-password">     
+        
+        <button class="login-btn action-btn">Log in</button>
+      </div>
+      
+      <div class="signup-modal modal hidden">
+        <label>User Name</label>
+        <input type="text"  class="auth-input signup-username">
+        <p>3–20 characters</p>        
+
+        <label>Email</label>
+        <input type="email" required class="auth-input signup-email">
+        <p>Enter a valid email address</p>        
+
+        <label>Password</label>
+        <input type="password" required class="auth-input signup-password">
+        <p>At least 8 characters, including at least one letter and one number</p>
+        <p>Use only letters, numbers, and underscores (_)</p>        
+
+        <button class="register-btn action-btn">Create Account</button>
+      </div> 
+    </div><!--content-panel-->
+
+    <div class="visual-panel">
+      <!--風景画像-->
     </div>
 
 	</main>

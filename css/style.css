@@ -1,3 +1,18 @@
+:root {
+  --bg-main: #F7FAFE;
+  --surface: #FFFFFF;
+  --surface-soft: #F3F6FC;
+
+  --text-main: #111B3A;
+  --text-sub: #6D7993;
+  --text-muted: #9AA6BB;
+
+  --border: #DDE5F0;
+
+  --primary: #4B6FEA;
+  --primary-hover: #3F5FD0;
+  --primary-soft: #EAF0FF;
+}
 
 * {
 	box-sizing: border-box;
@@ -7,6 +22,9 @@
 	display: none;
 }
 
+.modal.hidden {
+	display: none;
+}
 body {
     margin: 0;
     min-height: 100vh;
@@ -17,7 +35,7 @@ body {
 }
 
 main {
-	background-color: gray;
+
 	width: 1100px;
 	height: 700px;
 	padding: 20px;

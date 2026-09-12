@@ -47,7 +47,7 @@ async function checkLogin() {
 //ログアウト機能
 async function logoutDiary() {
 	try {
-		const response = await fetch("logout.php", {
+		const response = await fetch("api/logout.php", {
 			method: "GET"
 		});
 
@@ -64,6 +64,8 @@ async function logoutDiary() {
 logoutBtn.addEventListener("click", () => {
 	logoutDiary();
 })
+
+
 
 /*====================
 =====新規日記作成=====

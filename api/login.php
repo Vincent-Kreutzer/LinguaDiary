@@ -10,7 +10,58 @@ $data = json_decode($raw, true);
 $email = $data["email"];
 $password = $data["password"];
 
-//DB接続
+/*=====================
+=====バリデーション=====
+=======================*/
+
+//対象である変数やプロパティの存在確認+nullでないか
+if (!isset($email)) {
+  echo json_encode([
+    "success" => false,
+    "message" => "Required fields are missing."
+    ]);
+  exit;
+};
+
+if (!isset($password)) {
+  echo json_encode([
+    "successs" => false,
+    "message" => "Required fields are missing."
+  ]);
+  exit;
+};
+
+
+//中身の確認
+if (empty($email)) {
+  echo json_encode([
+    "success" => false,
+    "message" => "Please fill in all required fields."
+  ]);
+  exit;
+}
+
+if (empty($password)) {
+  echo json_encode([
+    "success" => false,
+    "message" => "Please fill in all required fields."
+  ]);
+  exit;
+}
+
+//メールの形式確認
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+  echo json_encode([
+    "success" => false,
+    "message" => "Invalid email or password."
+  ]);
+  exit;
+}
+
+/*==============
+=====DB接続=====
+===============*/
+
 $dbn = "mysql:dbname=linguadiary;host=localhost;charset=utf8mb4";
 $pdo = new PDO($dbn, "root", "", [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
