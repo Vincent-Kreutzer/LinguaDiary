@@ -170,3 +170,28 @@ main {
 .login-btn {
   margin-top: 14px;
 }
+
+
+
+@media (max-width: 768px) {
+
+  main {
+    flex-direction: column
+  }
+
+  .content-panel {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .visual-panel {
+    width: 100%;
+    height: 20vh;
+    min-height: 0;
+    background-size: cover;
+    background-position: center 60%;
+    background-repeat: no-repeat;
+  }
+
+  
+}

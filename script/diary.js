@@ -8,19 +8,32 @@ const diaryDate = document.querySelector(".diary-date");//日付
 const diaryTime = document.querySelector(".diary-time");//時刻
 const diaryInput = document.querySelector(".diary-input");
 const diaryOutput = document.querySelector(".diary-output");
+const languageSelect = document.querySelector(".language-select");
 const diaryList = document.querySelector(".diary-list");//リスト表示欄
+const diaryListClose = document.querySelector(".diary-list-close");
+const diaryListItems = document.querySelector(".diary-list-items")
 
-const topBtn = document.querySelector(".top-btn");
-const newBtn = document.querySelector(".new-btn");
-const listBtn = document.querySelector(".list-btn");
-const logoutBtn = document.querySelector(".logout-btn");
+const newBtn = document.querySelectorAll(".new-btn");
+const listBtn = document.querySelectorAll(".list-btn");
+const logoutBtn = document.querySelectorAll(".logout-btn");
+const menuToggle = document.querySelector(".menu-toggle");
+const mobileMenu = document.querySelector(".mobile-menu");
 
+const actionArea = document.querySelector(".action-area");
 const translateBtn = document.querySelector(".translate-btn");
 const speechBtn = document.querySelector(".speech-btn");
 const saveBtn = document.querySelector(".save-btn");
+const saveBtnText = document.querySelector(".save-btn-text");
 const deleteBtn = document.querySelector(".delete-btn");
 let currentDiaryId = null; //日記を編集や削除する際に参照する
 
+/*=====================
+=====ページ表示関係=====
+======================*/
+
+menuToggle.addEventListener("click", () => {
+	mobileMenu.classList.toggle("hidden");
+})
 
 /*=====================
 =====ページ保護機能=====
@@ -61,8 +74,11 @@ async function logoutDiary() {
 	}
 }
 
-logoutBtn.addEventListener("click", () => {
-	logoutDiary();
+logoutBtn.forEach((btn) => {
+		btn.addEventListener("click", () => {
+			menuToggle.classList.add("hidden");
+			logoutDiary();
+		});
 })
 
 
@@ -71,11 +87,6 @@ logoutBtn.addEventListener("click", () => {
 =====新規日記作成=====
 ======================*/
 
-topBtn.addEventListener("click", () => {
-	location.href = "index.html";
-
-})
-newBtn.addEventListener("click", resetDiaryForm);
 
 
 //表示項目を初期状態に戻す
@@ -88,6 +99,12 @@ function resetDiaryForm() {
 	updateDiaryMode();
 }
 
+newBtn.forEach((btn) => {	
+	btn.addEventListener("click", () => {
+		mobileMenu.classList.add("hidden");
+		resetDiaryForm;
+	});
+})
 
 //表示時間関数（日記を書き始めた日時を記録、表示）
 function getCurrentDate() {
@@ -113,13 +130,17 @@ function getCurrentDate() {
 
 //翻訳ボタンイベント付与
 translateBtn.addEventListener("click", () => {
-	const target = diaryInput.value;//翻訳対象を変数に入れる
+	const target = {
+		text: diaryInput.value,
+		language: languageSelect.value
+	}
+
 	console.log(target);
 	getTranslation(target);//翻訳関数実行
 })
 
 
-//翻訳関数
+//翻訳関数⇒PHPへ翻訳データ依頼
 async function getTranslation(target) {
 	if (!diaryInput.value.trim()) {
 		alert("Please write your diary entry first.")
@@ -131,11 +152,13 @@ async function getTranslation(target) {
 			headers: {
 				"Content-Type": "application/json"		
 			},
-			body: JSON.stringify({text: target})
+			body: JSON.stringify(target)
 		})
 
 		const data = await response.json();	
 		diaryOutput.value = data;
+		console.log(data);
+		//diaryOutput.value = data;
 	} catch (e) {
 		console.error(e);
 	}
@@ -259,7 +282,7 @@ async function getDiaries() {
 
 //日記データrender関数
 function renderDiaries(diaryArray) {
-	diaryList.innerHTML = "";
+	diaryListItems.innerHTML = "";
 	const diaries = diaryArray;
 	
 	diaries.forEach(diary => {		
@@ -280,12 +303,11 @@ function renderDiaries(diaryArray) {
 			diaryInput.value = diary.original_text;
 			diaryOutput.value = diary.translated_text;
 
-			diaryList.classList.toggle("hidden");
-			
+			diaryList.classList.toggle("hidden");			
 
 		})
 
-		diaryList.appendChild(diaryItem);
+		diaryListItems.appendChild(diaryItem);
 
 		const listDate = document.createElement("span");
 		listDate.classList.add("list-date");
@@ -301,12 +323,17 @@ function renderDiaries(diaryArray) {
 	})
 }//renderDiaries();
 
+//リストを閉じるイベント
+diaryListClose.addEventListener("click", () => {
+	diaryList.classList.add("hidden");
+})
 
 /*======================
 =====既存日記の削除=====
 =======================*/
 
 deleteBtn.addEventListener("click", async () => {
+	
 	const confirmed = confirm("Are you sure you want to delete the diary entry?");
 	if (!confirmed) return;
 	try {
@@ -338,9 +365,13 @@ deleteBtn.addEventListener("click", async () => {
 
 
 //listBtnのイベント付与：一覧の表示非表示切り替え
-listBtn.addEventListener("click", () => {	
-	toggleDiaryList();
-	})
+listBtn.forEach((btn) => {
+	btn.addEventListener("click", () => {	
+		mobileMenu.classList.add("hidden");
+		toggleDiaryList();
+	});
+})
+
 
 //一覧の表示非表示切り替え
 function toggleDiaryList() {
@@ -351,10 +382,12 @@ function toggleDiaryList() {
 function updateDiaryMode() {
 	if (currentDiaryId === null) {
 		deleteBtn.classList.add("hidden");
-		saveBtn.textContent = "SAVE";
+		actionArea.classList.add("three-btns");//delete非表示で3ボタンレイアウト
+		saveBtnText.textContent = "SAVE";
 	} else {
 		deleteBtn.classList.remove("hidden");
-		saveBtn.textContent = "UPDATE";
+		actionArea.classList.remove("three-btns");
+		saveBtnText.textContent = "UPDATE";
 	}
 }
 

@@ -5,49 +5,117 @@
 	<meta name="description" content="A language learning app that lets you translate a diary written in your native language into a foreign language, helping you learn the meanings and pronunciations of words and sentences.">
 	<title>LinguaDiary</title>
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/main.css">
+
 </head>
 <body>
 	<main>
 		
-		<div class="diary-list hidden">
-			<!--ここに既存日記の日付と題名を表示する-->
+		<div class="top-area"><!--ロゴと上部ナビゲーションバー-->
+			<div class="app-title-area">
+				<h1><span class="brand-accent">Lingua</span>Diary</h1>
+				<p>WRITE ・ TRANSLATE ・ GROW</p>
+			</div>
+			
+			<div class="navigation-area">									
+				<button class="new-btn action-btn">NEW</button>
+				<button class="list-btn action-btn">LIST</button>			
+				<button class="logout-btn action-btn">LOG OUT</button>
+			</div>
+
+			<button class="menu-toggle">☰</button>
 		</div>
 
-		<div class="book-area">
+		<div class="mobile-menu hidden">			
+			<button class="new-btn action-btn">NEW</button>
+			<button class="list-btn action-btn">LIST</button>			
+			<button class="logout-btn action-btn">LOG OUT</button>
+		</div>
+
+		<div class="diary-list hidden">
+			<div class="diary-list-header">
+				<h2>Diary List</h2>
+				<button class="diary-list-close">x</button>
+			</div>
+			<div class="diary-list-items">
+				<!--ここに既存日記の日付と題名を表示する-->
+			</div>			
+		</div>
+
+		<div class="diary-meta-area">
+			<img src="images/diary_icon.svg" alt="Diary info icon" class="diary-meta-icon">
+			<div class="diary-meta-info">
+				<h3>日記の情報</h3>
+				<p>今日の出来事を記録しましょう</p>
+			</div>
+
+			<input type="text" placeholder="今日の日記テーマ" class="diary-title">
+			<div class="diary-datetime">
+				<input type="date" class="diary-date">
+				<input type="time" class="diary-time">
+			</div>				
+		</div>
+
+		<div class="book-area"><!--左右のページ-->
 
 			<div class="left-page page">
-				<div class="diary-meta">
-					<input type="text" placeholder="今日の日記テーマ" class="diary-title">
-					<div class="diary-datetime">
-						<input type="date" class="diary-date">
-						<input type="time" class="diary-time">
-					</div>
-				</div>
-				<textarea class="diary-input diary"></textarea>
+				<div class="page-header">
+					<h2 class="page-label">Original</h2>
+					<span class="page-subtitle">Write freely in any language.</span>
+					<span class="char-count"></span>
+				</div>				
+				<textarea class="diary-input diary" placeholder="ここに日記を書きましょう..."></textarea>
 			</div>
 
 			<div class="right-page page">
-				
-				<div class="navigation-area">
-					<div>
-						<button class="top-btn action-btn">TOP</button>
-						<button class="new-btn action-btn">NEW</button>
-						<button class="list-btn action-btn">LIST</button>
+				<div class="page-header">
+					<h2 class="page-label">Translation</h2>
+					<span class="page-subtitle">Clear, natural translation.</span>
+					
+					<div class="language-select-area">
+						<img src="images/language_icon.svg" alt="glove-img" class="language-icon">
+						<select class="language-select">
+							<option value="en">English</option>
+							<option value="fr">French</option>
+							<option value="de">German</option>
+							<option value="es">Spanish</option>
+							<option value="uk">Ukrainian</option>
+							<option value="ja">Japanese</option>
+							<option value="ko">Korean</option>	
+							<option value="zh">Chinese</option>						
+						</select>
 					</div>
-					<button class="logout-btn action-btn">LOG OUT</button>
 				</div>
-
-				<textarea class="diary-output diary"></textarea>
-
-				<div class="action-area">
-					<button class="translate-btn action-btn">TRANSLATE</button>
-					<button class="speech-btn action-btn">SPEECH</button>
-					<button class="save-btn action-btn">SAVE</button>
-					<button class="delete-btn action-btn hidden">DELETE</button>
-				</div>
+				
+				<textarea class="diary-output diary" placeholder="ここに翻訳が表示されます..."></textarea>
+			
 			</div>
-		</div>
-		
+
+
+		</div><!--book-area-->
+
+		<div class="action-area">
+				<button class="translate-btn action-btn">
+					 <img src="images/translate.svg" alt="translate.svg" class="action-icon">
+					<span>TRANSLATE</span>
+				</button>
+
+				<button class="speech-btn action-btn">
+					<img src="images/speech.svg" alt="speech.svg" class="action-icon">
+					<span>SPEECH</span>
+				</button>
+
+				<button class="save-btn action-btn">
+					<img src="images/save.svg" alt="save.svg" class="action-icon">
+					<span class="save-btn-text">SAVE</span>
+				</button>
+
+				<button class="delete-btn action-btn hidden">
+					<img src="images/delete.svg" alt="delete.svg" class="action-icon">
+					<span>DELETE</span>
+				</button>
+				
+			</div>
 		
 	</main>
 	<script src="script/diary.js"></script>
