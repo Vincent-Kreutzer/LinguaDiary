@@ -87,8 +87,6 @@ logoutBtn.forEach((btn) => {
 =====新規日記作成=====
 ======================*/
 
-
-
 //表示項目を初期状態に戻す
 function resetDiaryForm() {
 	getCurrentDate();
@@ -123,8 +121,7 @@ function getCurrentDate() {
 	const padMinutes = String(minutes).padStart(2,"0");
 
 	diaryDate.value = `${year}-${padMonth}-${padDate}`;
-	diaryTime.value = `${padHours}:${padMinutes}`;
-	
+	diaryTime.value = `${padHours}:${padMinutes}`;	
 }
 
 
@@ -165,16 +162,59 @@ async function getTranslation(target) {
 }
 
 
-function speakTranslation() {
-	const text = diaryOutput.value;
+function speakTranslation(lang) {
+	const text = diaryOutput.value;//スピーチ対象の文章
 	const utterance = new SpeechSynthesisUtterance(text);
-	utterance.lang = "en-US";
+	const languages = {
+		en: "en-US",		
+		fr: "fr-FR",
+		it: "it-IT",
+		de: "de-DE",
+		es: "es-ES",
+		uk: "uk-UA",
+		ja: "ja-JP",
+		ko: "ko-KR",
+		zh: "zh-CN"
+	};
+
+	switch(lang) {
+		case "en":
+			utterance.lang = languages.en;
+			break;
+		case "fr":
+			utterance.lang = languages.fr;
+			break;
+		case "it":
+			utterance.lang = languages.it;
+			break;
+		case "de":
+			utterance.lang = languages.de;
+			break;
+		case "es":
+			utterance.lang = languages.es;
+			break;
+		case "uk":
+			utterance.lang = languages.uk;
+			break;
+		case "ja":
+			utterance.lang = languages.ja;
+			break;
+		case "ko":
+			utterance.lang = languages.ko;
+			break;
+		case "zh":
+			utterance.lang = languages.zh;
+			break;
+	}
+
 	speechSynthesis.speak(utterance);
+	
+	
 }
 
 //音読ボタンイベント
 speechBtn.addEventListener("click", () => {
-	speakTranslation();
+	speakTranslation(languageSelect.value);
 })
 
 //保存ボタンイベント付与
